@@ -2,6 +2,8 @@ package com.studenttaskmanager.repository;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.*;
 
 import com.studenttaskmanager.model.Task;
@@ -13,7 +15,8 @@ public class MySqlTaskRepository implements TaskRepository
 	private static final String SELECT_ALL_SQL ="SELECT id, title, created_at FROM tasks";
 	Connection conn =null;
 	PreparedStatement ps=null;
-	 public void save(Task task) {
+	 public void save(Task task) 
+	 {
 	        
 		 	try {
 		 		conn= DbConnectionUtil.getConnection();
@@ -47,11 +50,47 @@ public class MySqlTaskRepository implements TaskRepository
 	        System.out.println("Saving task to MySQL: " + task.getTitle());
 	    }
 
-	    @Override
-	    public List<Task> findAll() {
-	        // JDBC code will come here
-	        return new ArrayList<>();
-	    }
+	   
+	    	@Override
+	    	public List<Task> findAll() 
+	    	{
+
+	    	    List<Task> tasks = new ArrayList<>();
+
+	    	    Connection conn = null;
+	    	    PreparedStatement ps = null;
+	    	    ResultSet rs = null;
+
+	    	    try {
+	    	        conn = DbConnectionUtil.getConnection();
+	    	        ps = conn.prepareStatement(SELECT_ALL_SQL);
+	    	        rs = ps.executeQuery();
+
+	    	        while (rs.next()) {
+	    	            Task task = new Task(
+	    	                rs.getInt("id"),
+	    	                rs.getString("title"),
+	    	                rs.getTimestamp("created_at").toLocalDateTime()
+	    	            );
+	    	            tasks.add(task);
+	    	        }
+
+	    	    } catch (SQLException e) {
+	    	        throw new RuntimeException("Error fetching tasks", e);
+
+	    	    } finally {
+	    	        try {
+	    	            if (rs != null) rs.close();
+	    	            if (ps != null) ps.close();
+	    	            if (conn != null) conn.close();
+	    	        } catch (SQLException ignored) {
+	    	        }
+	    	    }
+
+	    	    return tasks;
+	    	}
+
+	    
 	
 
 }
