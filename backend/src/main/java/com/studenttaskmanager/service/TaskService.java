@@ -6,6 +6,8 @@ import com.studenttaskmanager.model.Task;
 public interface TaskService 
 {
 
-	Task createTask(String title);
+	 void createTask(Task task);
+
+	 List<Task> getAllTasks();
 
 }
