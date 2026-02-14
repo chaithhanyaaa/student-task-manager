@@ -8,8 +8,18 @@
     <groupId>com.studenttaskmanager</groupId>
     <artifactId>backend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+
+    <!-- VERY IMPORTANT -->
     <packaging>war</packaging>
 
-    
+    <dependencies>
+        <!-- Servlet API for Tomcat 10 (Jakarta) -->
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <version>6.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
 
 </project>

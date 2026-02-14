@@ -1,49 +1,45 @@
+
+
 package com.studenttaskmanager.controller;
-import com.studenttaskmanager.repository.MySqlTaskRepository;
-import com.studenttaskmanager.repository.TaskRepository;
+
 import com.studenttaskmanager.service.TaskService;
 import com.studenttaskmanager.service.TaskServiceImpl;
 import com.studenttaskmanager.model.Task;
 
-
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
+import java.io.IOException;
 
 @WebServlet("/tasks")
-public class TaskController extends HttpServlet {
-
-    private static final long serialVersionUID = 1L;
+public class TaskController extends jakarta.servlet.http.HttpServlet {
 
     private TaskService taskService;
 
     @Override
-    public void init() throws jakarta.servlet.ServletException {
-        TaskRepository repository = new MySqlTaskRepository();
-        this.taskService = new TaskServiceImpl(repository);
+    public void init() {
+        this.taskService = new TaskServiceImpl();
     }
-    
+
     @Override
-    protected void doPost(jakarta.servlet.http.HttpServletRequest req,
-                          jakarta.servlet.http.HttpServletResponse resp)
-            throws jakarta.servlet.ServletException, java.io.IOException {
+    protected void doGet(jakarta.servlet.http.HttpServletRequest req, jakarta.servlet.http.HttpServletResponse resp)
+            throws IOException {
 
-        String title = req.getParameter("title");
+        // calling SERVICE (not creating Task here)
+        Task task = taskService.createTask("learn backend");
 
-        Task task = new Task(title, java.time.LocalDateTime.now());
-        taskService.createTask(task);
-
-        resp.setContentType("text/plain");
-        resp.getWriter().write("Task created");
+        resp.setContentType("application/json");
+        resp.getWriter().write(
+            "{\"title\":\"" + task.getTitle() + "\"}"
+        );
     }
-    
-    @Override
-    protected void doGet(jakarta.servlet.http.HttpServletRequest req,
-                         jakarta.servlet.http.HttpServletResponse resp)
-            throws jakarta.servlet.ServletException, java.io.IOException {
-
-        resp.getWriter().write("GET is working, use POST to create task");
-    }
-
-
 }
+
+
+
+
+
+
+
