@@ -1,27 +1,13 @@
 package com.studenttaskmanager.service;
+import java.time.LocalDateTime;
+import com.studenttaskmanager.model.*;
 
-import java.util.*;
 
-import com.studenttaskmanager.model.Task;
-import com.studenttaskmanager.repository.TaskRepository;
+public class TaskServiceImpl implements TaskService {
 
-public class TaskServiceImpl implements TaskService 
-{
-	private final TaskRepository repository;
-
-	public TaskServiceImpl(TaskRepository repository)
-	{
-		this.repository=repository;
-	}
-	
-	public void createTask(Task task)
-	{
-		repository.save(task);
-	}
-	
-	public List<Task>  getAllTasks()
-	{
-		repository.findAll();
-	}
-
+    @Override
+    public Task createTask(String title) {
+       
+        return new Task(title.toUpperCase(), LocalDateTime.now());
+    }
 }
