@@ -7,5 +7,7 @@ public interface TaskRepository
 {
 	void save(Task task);
 	List<Task> findAll();
+	int deleteById(int id);
+
 
 }
