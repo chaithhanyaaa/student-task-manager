@@ -17,24 +17,22 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@WebServlet("/tasks")
-public class TaskController extends HttpServlet {
+@WebServlet("/tasks/*")
+public class TaskController extends HttpServlet 
+{
 
     private static final long serialVersionUID = 1L;
     private TaskService taskService;
 
-    // 1️⃣ Servlet initialization
     @Override
     public void init() throws ServletException {
         TaskRepository repository = new MySqlTaskRepository();
         this.taskService = new TaskServiceImpl(repository);
     }
 
-    // 2️⃣ CREATE TASK (POST /backend/tasks)
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws IOException {
 
-        // 1. Read request body
         StringBuilder body = new StringBuilder();
         BufferedReader reader = req.getReader();
         String line;
@@ -104,4 +102,37 @@ public class TaskController extends HttpServlet {
         resp.setContentType("application/json");
         resp.getWriter().write(json.toString());
     }
+    
+    
+    @Override
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
+
+        String pathInfo = request.getPathInfo();
+
+        if (pathInfo == null || pathInfo.equals("/")) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.getWriter().write("Task ID is missing");
+            return;
+        }
+
+        try {
+            int taskId = Integer.parseInt(pathInfo.substring(1));
+
+            boolean deleted = taskService.deleteTaskById(taskId);
+
+            if (deleted) {
+                response.setStatus(HttpServletResponse.SC_OK);
+                response.getWriter().write("Task deleted successfully");
+            } else {
+                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                response.getWriter().write("Task not found");
+            }
+
+        } catch (NumberFormatException e) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.getWriter().write("Invalid task ID");
+        }
+    }
+
 }

@@ -9,5 +9,8 @@ public interface TaskService
 	 void createTask(Task task);
 
 	 List<Task> getAllTasks();
+	 
+	 boolean deleteTaskById(int id);
+
 
 }

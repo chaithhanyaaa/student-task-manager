@@ -89,6 +89,26 @@ public class MySqlTaskRepository implements TaskRepository
 
 	    	    return tasks;
 	    	}
+	    	
+	    	
+	    	
+	    	
+	    	@Override
+	    	public int deleteById(int id) {
+
+	    	    String sql = "DELETE FROM tasks WHERE id = ?";
+
+	    	    try (Connection connection = DbConnectionUtil.getConnection();
+	    	         PreparedStatement stmt = connection.prepareStatement(sql)) {
+
+	    	        stmt.setInt(1, id);
+	    	        return stmt.executeUpdate(); // 👈 VERY IMPORTANT
+
+	    	    } catch (Exception e) {
+	    	        throw new RuntimeException(e);
+	    	    }
+	    	}
+
 
 	    
 	
